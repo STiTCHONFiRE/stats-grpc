@@ -11,9 +11,9 @@ export class TransactionStatsServiceService {
   }
 
   transactionsStats$ = () =>
-    this.http.get<TransactionStats>('http://localhost:8081/api/v1/transactions');
+    this.http.get<TransactionStats>('http://195.133.14.141:8082/api/v1/transactions');
 
   transactionStatsWithBlockTime$ = () =>
-    this.http.get<TransactionStatsWithBlockTime>('http://localhost:8081/api/v1/transactions/block-time');
+    this.http.get<TransactionStatsWithBlockTime>('http://195.133.14.141/8082/api/v1/transactions/block-time');
 
 }

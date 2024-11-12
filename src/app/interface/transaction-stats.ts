@@ -1,15 +1,10 @@
 export interface TransactionStats {
   mean: number;
-  n: number;
+  size: number;
   grpcFasterWebsocketCount: number;
   max: number;
   min: number;
-  variance: number;
-  standardDeviation: number;
-  coefficientVariance: number;
   transactionInfos: TransactionInfo[];
-  transactionInfosYellowstone: TransactionInfo[];
-  transactionInfosWebsocket: TransactionInfo[];
 }
 
 export interface TransactionInfo {
@@ -23,10 +18,19 @@ export interface TransactionInfoWithBlockTime {
   txId: string;
   timeDifference: number;
   blockTimestamp: Date;
-  websocketTimestamp: Date;
+  protocolTimestamp: Date;
+}
+
+export interface TransactionAllStatsWithBlockTime {
+  size: number;
+  yellowstone: TransactionInfoWithBlockTime[];
+  websocket: TransactionInfoWithBlockTime[];
 }
 
 export interface TransactionStatsWithBlockTime {
   mean: number;
-  transactionInfoWithBlockTime: TransactionInfoWithBlockTime[];
+  size: number;
+  max: number;
+  min: number;
+  protocolInfos: TransactionInfoWithBlockTime[];
 }

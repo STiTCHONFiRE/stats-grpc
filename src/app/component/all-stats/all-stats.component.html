@@ -1,0 +1,69 @@
+<div class="flex justify-center my-4" style="width: 100%">
+  <div role="tablist" class="tabs tabs-boxed">
+    <a role="tab"
+       class="tab"
+       [class.tab-active]="state() === 'all'"
+       (click)="updateState('all')"
+    >
+      Абсолютная
+    </a>
+
+    <a
+      role="tab"
+      class="tab"
+      [class.tab-active]="state() === 'relatively'"
+      (click)="updateState('relatively')"
+    >
+      Относительная
+    </a>
+  </div>
+</div>
+
+@switch (state()) {
+  @case ('all') {
+    @if (transactionAllStats$ | async; as stats) {
+      @switch (stats.appState) {
+        @case ('APP_LOADING') {
+          <div class="hero">
+            <div class="hero-content flex-col text-center">
+              <span class="loading loading-ring loading-lg text-primary"></span>
+            </div>
+          </div>
+        }
+        @case ('APP_LOADED') {
+          @if (allStatsEChart) {
+            <div echarts [options]="allStatsEChart" style="height: 800px; margin-bottom: 50px"></div>
+          }
+        }
+      }
+    }
+  }
+  @case ('relatively') {
+    @if (transactionRelativelyStats$ | async; as stats) {
+      @switch (stats.appState) {
+        @case ('APP_LOADING') {
+            <div class="flex-col text-center m-5">
+              <span class="loading loading-ring loading-lg text-primary"></span>
+            </div>
+        }
+        @case ('APP_LOADED') {
+          <div class="flex flex-col items-center m-2">
+            <div class="card w-11/12 md:w-9/12 bg-base-200">
+              <div class="card-body">
+                <div class="card-title">Статистика (страница 1)</div>
+                <div>Средняя разница: {{ stats.appData?.mean }} (кол-во записей: {{ stats.appData?.size }})</div>
+                <div>Минимальная разница: {{ stats.appData?.min }}</div>
+                <div>Максимальная разница: {{ stats.appData?.max }}</div>
+                <div>GRPC оказался быстрее в {{ stats.appData?.grpcFasterWebsocketCount }} случаях</div>
+              </div>
+            </div>
+          </div>
+
+          @if (relativelyEChart) {
+            <div echarts [options]="relativelyEChart" style="height: 800px; margin-bottom: 50px"></div>
+          }
+        }
+      }
+    }
+  }
+}

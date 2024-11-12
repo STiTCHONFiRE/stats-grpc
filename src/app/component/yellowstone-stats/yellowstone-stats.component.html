@@ -1,0 +1,25 @@
+@if (yellowstoneStats$ | async; as stats) {
+  @switch (stats.appState) {
+    @case ('APP_LOADING') {
+      <div class="flex-col text-center m-5">
+        <span class="loading loading-ring loading-lg text-primary"></span>
+      </div>
+    }
+    @case ('APP_LOADED') {
+      <div class="flex flex-col items-center m-2">
+        <div class="card w-11/12 md:w-9/12 bg-base-200">
+          <div class="card-body">
+            <div class="card-title">Статистика (страница 1)</div>
+            <div>Средняя разница: {{ stats.appData?.mean }} (кол-во записей: {{ stats.appData?.size }})</div>
+            <div>Минимальная разница: {{ stats.appData?.min }}</div>
+            <div>Максимальная разница: {{ stats.appData?.max }}</div>
+          </div>
+        </div>
+      </div>
+
+      @if (eChartsOptions) {
+        <div echarts [options]="eChartsOptions" style="height: 800px; margin-bottom: 50px"></div>
+      }
+    }
+  }
+}

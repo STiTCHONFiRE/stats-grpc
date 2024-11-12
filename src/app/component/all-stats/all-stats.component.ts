@@ -20,6 +20,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class AllStatsComponent {
   state = signal<'all' | 'relatively'>('all');
+  currentPage = signal<number>(0);
 
   transactionStatsService = inject(TransactionStatsService);
 
@@ -32,7 +33,7 @@ export class AllStatsComponent {
   constructor() {
     effect(() => {
       if (this.state() == 'all') {
-        this.transactionAllStats$ = this.transactionStatsService.transactionAllStatsWithBlockTime$()
+        this.transactionAllStats$ = this.transactionStatsService.transactionAllStatsWithBlockTime$(this.currentPage())
           .pipe(
             map(result => {
               this.setupAllStatsEChart(result);
@@ -42,7 +43,7 @@ export class AllStatsComponent {
             catchError((err: HttpErrorResponse) => of({appState: 'APP_ERROR', err}))
           );
       } else {
-        this.transactionRelativelyStats$ = this.transactionStatsService.transactionsStats$()
+        this.transactionRelativelyStats$ = this.transactionStatsService.transactionsStats$(this.currentPage())
           .pipe(
             map(result => {
               this.setupRelativelyEChart(result);
@@ -53,6 +54,14 @@ export class AllStatsComponent {
           );
       }
     });
+  }
+
+  public nextPage(): void {
+    this.currentPage.update(v => v + 1);
+  }
+
+  public prevPage(): void {
+    this.currentPage.update(v => v - 1);
   }
 
   public updateState(state: 'all' | 'relatively') {
@@ -71,7 +80,11 @@ export class AllStatsComponent {
         color: '#FFFFFF'
       },
       title: {
-        show: false
+        text: 'График относительного сравнения',
+        textStyle: {
+          color: '#FFFFFF'
+        },
+        left: 'center'
       },
       legend: {
         bottom: 5,
@@ -123,7 +136,7 @@ export class AllStatsComponent {
       },
       series: [
         {
-          name: 'difference',
+          name: 'Разница',
           type: 'line',
           showSymbol: false,
           color: '#8100ff',
@@ -160,7 +173,11 @@ export class AllStatsComponent {
         color: '#FFFFFF'
       },
       title: {
-        show: false
+        text: 'График сравнения с BlockTime',
+        textStyle: {
+          color: '#FFFFFF'
+        },
+        left: 'center'
       },
       legend: {
         bottom: 5,
@@ -212,7 +229,7 @@ export class AllStatsComponent {
       },
       series: [
         {
-          name: 'websocket',
+          name: 'WebSocket',
           type: 'line',
           showSymbol: false,
           color: '#8100ff',
@@ -228,7 +245,7 @@ export class AllStatsComponent {
           ]
         },
         {
-          name: 'yellowstone',
+          name: 'Yellowstone',
           type: 'line',
           showSymbol: false,
           color: '#019318',

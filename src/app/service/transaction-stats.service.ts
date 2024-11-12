@@ -21,15 +21,31 @@ export class TransactionStatsService {
   constructor(private http: HttpClient) {
   }
 
-  transactionsStats$ = () =>
-    this.http.get<TransactionStats>(`${this.host}/api/v1/transactions`);
+  transactionsStats$ = (page: number) =>
+    this.http.get<TransactionStats>(`${this.host}/api/v1/transactions`, {
+      params: {
+        page: page
+      }
+    });
 
-  transactionAllStatsWithBlockTime$ = () =>
-    this.http.get<TransactionAllStatsWithBlockTime>(`${this.host}/api/v1/transactions/block-time`);
+  transactionAllStatsWithBlockTime$ = (page: number) =>
+    this.http.get<TransactionAllStatsWithBlockTime>(`${this.host}/api/v1/transactions/block-time`, {
+      params: {
+        page: page
+      }
+    });
 
-  transactionStatsYellowstone$ = () =>
-    this.http.get<TransactionStatsWithBlockTime>(`${this.host}/api/v1/transactions/yellowstone`);
+  transactionStatsYellowstone$ = (page: number) =>
+    this.http.get<TransactionStatsWithBlockTime>(`${this.host}/api/v1/transactions/yellowstone`, {
+      params: {
+        page: page
+      }
+    });
 
-  transactionStatsWebsocket$ = () =>
-    this.http.get<TransactionStatsWithBlockTime>(`${this.host}/api/v1/transactions/websocket`);
+  transactionStatsWebsocket$ = (page: number) =>
+    this.http.get<TransactionStatsWithBlockTime>(`${this.host}/api/v1/transactions/websocket`, {
+      params: {
+        page: page
+      }
+    });
 }

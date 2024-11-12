@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
 import { TransactionStatsWithBlockTime } from '../../interface/transaction-stats';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,21 +20,32 @@ import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
 })
 export class WebsocketStatsComponent {
   transactionStatsService = inject(TransactionStatsService);
+  currentPage = signal<number>(0);
 
   websocketStats$?: Observable<{ appState: string, appData?: TransactionStatsWithBlockTime, err?: HttpErrorResponse; }>
 
   eChartsOptions?: EChartsOption;
 
   constructor() {
-    this.websocketStats$ = this.transactionStatsService.transactionStatsWebsocket$()
-      .pipe(
-        map(result => {
-          this.setupECharts(result);
-          return {appState: 'APP_LOADED', appData: result};
-        }),
-        startWith({appState: 'APP_LOADING'}),
-        catchError((err: HttpErrorResponse) => of({appState: 'APP_ERROR', err}))
-      );
+    effect(() => {
+      this.websocketStats$ = this.transactionStatsService.transactionStatsWebsocket$(this.currentPage())
+        .pipe(
+          map(result => {
+            this.setupECharts(result);
+            return {appState: 'APP_LOADED', appData: result};
+          }),
+          startWith({appState: 'APP_LOADING'}),
+          catchError((err: HttpErrorResponse) => of({appState: 'APP_ERROR', err}))
+        );
+    });
+  }
+
+  public nextPage(): void {
+    this.currentPage.update(v => v + 1);
+  }
+
+  public prevPage(): void {
+    this.currentPage.update(v => v - 1);
   }
 
   private setupECharts(stats: TransactionStatsWithBlockTime): void {
@@ -49,7 +60,11 @@ export class WebsocketStatsComponent {
         color: '#FFFFFF'
       },
       title: {
-        show: false
+        text: 'График сравнения WebSocket с Block time',
+        textStyle: {
+          color: '#FFFFFF'
+        },
+        left: 'center'
       },
       legend: {
         bottom: 5,
@@ -101,7 +116,7 @@ export class WebsocketStatsComponent {
       },
       series: [
         {
-          name: 'websocket',
+          name: 'WebSocket',
           type: 'line',
           showSymbol: false,
           color: '#8100ff',

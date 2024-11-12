@@ -5,11 +5,34 @@
         <span class="loading loading-ring loading-lg text-primary"></span>
       </div>
     }
+    @case ('APP_ERROR') {
+      <div class="flex justify-center p-2">
+        <div class="my-2 alert alert-error w-10/12">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span
+          >
+            Ничего не найдено. Попробуйте позже. Ошибка: {{ stats.err?.message }}
+          </span>
+        </div>
+      </div>
+    }
     @case ('APP_LOADED') {
       <div class="flex flex-col items-center m-2">
         <div class="card w-11/12 md:w-9/12 bg-base-200">
           <div class="card-body">
-            <div class="card-title">Статистика (страница 1)</div>
+            <div class="card-title">Статистика (страница {{ currentPage() + 1 }})</div>
             <div>Средняя разница: {{ stats.appData?.mean }} (кол-во записей: {{ stats.appData?.size }})</div>
             <div>Минимальная разница: {{ stats.appData?.min }}</div>
             <div>Максимальная разница: {{ stats.appData?.max }}</div>
@@ -18,7 +41,22 @@
       </div>
 
       @if (eChartsOptions) {
-        <div echarts [options]="eChartsOptions" style="height: 800px; margin-bottom: 50px"></div>
+        <div class="flex justify-center m-4 gap-10">
+          <button class="btn btn-primary uppercase"
+                  (click)="prevPage()"
+                  [disabled]="currentPage() === 0"
+          >
+            назад
+          </button>
+          <button class="btn btn-primary uppercase"
+                  (click)="nextPage()"
+                  [disabled]="stats.appData!.size < 5"
+          >
+            вперед
+          </button>
+        </div>
+
+        <div echarts [options]="eChartsOptions" style="height: 800px; margin-bottom: 50px; margin-top: 25px"></div>
       }
     }
   }

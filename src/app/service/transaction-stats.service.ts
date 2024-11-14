@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TransactionAllStatsWithBlockTime, TransactionStats, TransactionStatsWithBlockTime } from '../interface/transaction-stats';
+import { TokenBuyInfo, TransactionAllStatsWithBlockTime, TransactionStats, TransactionStatsWithBlockTime } from '../interface/transaction-stats';
 
 @Injectable({
   providedIn: 'root'
@@ -48,4 +48,6 @@ export class TransactionStatsService {
         page: page
       }
     });
+
+  tokenBuyInfo$ = () => this.http.get<TokenBuyInfo[]>(`${this.host}/api/v1/token-buy`);
 }

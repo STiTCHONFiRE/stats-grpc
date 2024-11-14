@@ -34,3 +34,11 @@ export interface TransactionStatsWithBlockTime {
   min: number;
   protocolInfos: TransactionInfoWithBlockTime[];
 }
+
+export interface TokenBuyInfo {
+  txId: string;
+  tokenAddress: string;
+  mintTimestamp: Date;
+  buyTimestamp: Date;
+  difference: number;
+}

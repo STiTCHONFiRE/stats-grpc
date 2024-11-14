@@ -1,0 +1,21 @@
+<div class="flex items-center justify-center flex-wrap p-4">
+  @if (tokens$ | async; as tokenBuyInfos) {
+    @for (token of tokenBuyInfos; track token) {
+      <div class="card bg-base-200 md:w-4/12 w-11/12">
+        <div class="card-body">
+          <div class="card-title">Покупка токена</div>
+          <div>Время появления: {{ token.mintTimestamp }}</div>
+          <div>Время покупки: {{ token.buyTimestamp }}</div>
+          <div>Разница в миллисекундах: {{ token.difference }}</div>
+          <div class="card-actions justify-end my-4">
+            <a [href]="'https://solscan.io/tx/' + token.txId" target="_blank">
+              <button class="btn btn-primary">
+                SOLSCAN
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>
